@@ -1,0 +1,169 @@
+﻿@model MovieVM
+@{
+    ViewData["Title"] = "Create Movie";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+<div class="container mt-4">
+    <h4 class="mb-4 fw-bold">➕ Create New Movie</h4>
+
+    <div class="card theme-wizard">
+        <div class="card-header bg-body-tertiary pt-3 pb-2">
+            <ul class="nav justify-content-between nav-wizard" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active fw-semi-bold" href="#step1" data-bs-toggle="tab" data-wizard-step="1" role="tab">
+                        <span class="nav-item-circle-parent"><span class="nav-item-circle"><i class="bi bi-film"></i></span></span>
+                        <span class="d-none d-md-block mt-1 fs-10">Movie Info</span>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link fw-semi-bold" href="#step2" data-bs-toggle="tab" data-wizard-step="2" role="tab">
+                        <span class="nav-item-circle-parent"><span class="nav-item-circle"><i class="bi bi-images"></i></span></span>
+                        <span class="d-none d-md-block mt-1 fs-10">Media Upload</span>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link fw-semi-bold" href="#step3" data-bs-toggle="tab" data-wizard-step="3" role="tab">
+                        <span class="nav-item-circle-parent"><span class="nav-item-circle"><i class="bi bi-people"></i></span></span>
+                        <span class="d-none d-md-block mt-1 fs-10">Cast & Cinemas</span>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link fw-semi-bold" href="#step4" data-bs-toggle="tab" data-wizard-step="4" role="tab">
+                        <span class="nav-item-circle-parent"><span class="nav-item-circle"><i class="bi bi-check2-circle"></i></span></span>
+                        <span class="d-none d-md-block mt-1 fs-10">Confirmation</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="card-body py-4" id="wizard-controller">
+                <div class="tab-content">
+
+                    <!-- Step 1: Movie Info -->
+                    <div class="tab-pane active px-sm-3 px-md-5" role="tabpanel" id="step1">
+                        <div class="mb-3">
+                            <label asp-for="Movie.Name" class="form-label" >Name</label>
+                            <input asp-for="Movie.Name" class="form-control" />
+                            <span asp-validation-for="Movie.Name" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Movie.Description" class="form-label">Description</label>
+                            <textarea asp-for="Movie.Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Movie.Description" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Movie.Price" class="form-label">Price</label>
+                                <input asp-for="Movie.Price" class="form-control" />
+                                <span asp-validation-for="Movie.Price" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Movie.Discount" class="form-label">Discount</label>
+                                <input asp-for="Movie.Discount" class="form-control" />
+                                <span asp-validation-for="Movie.Discount" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Movie.Rate" class="form-label">Rate</label>
+                            <input asp-for="Movie.Rate" class="form-control" />
+                            <span asp-validation-for="Movie.Rate" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Movie.Status" class="form-label">Status</label>
+                            <select asp-for="Movie.Status" class="form-select">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                            <span asp-validation-for="Movie.Status" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Media Upload -->
+                    <div class="tab-pane px-sm-3 px-md-5" role="tabpanel" id="step2">
+                        <div class="mb-3">
+                            <label class="form-label">Main Image</label>
+                            <input class="form-control" type="file" name="img" onchange="previewImage(event)" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sub Images</label>
+                            <input class="form-control" type="file" name="subImgs" multiple />
+                        </div>
+                        <img id="preview" style="max-width: 200px; margin-top:10px;" class="rounded d-none" />
+                    </div>
+
+                    <!-- Step 3: Cast & Cinemas -->
+                    <div class="tab-pane px-sm-3 px-md-5" role="tabpanel" id="step3">
+                        <div class="mb-3">
+                            <label class="form-label">Actors</label>
+                            <select name="actors" class="form-select" multiple required>
+                                @foreach (var actor in Model.actors)
+                                {
+                                    <option value="@actor.Id">@actor.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cinemas</label>
+                            <select name="cinemaIds" class="form-select" multiple required>
+                                @foreach (var cinema in Model.Cinemas)
+                                {
+                                    <option value="@cinema.Id" >@cinema.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select asp-for="Movie.CategoryId" class="form-select" required>
+                                <option value="">-- Select Category --</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Movie.CategoryId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Confirmation -->
+                    <div class="tab-pane text-center px-sm-3 px-md-5" role="tabpanel" id="step4">
+                        <div class="wizard-lottie-wrapper">
+                            <div class="lottie wizard-lottie mx-auto my-3" data-options='{"path":"~/assets/img/animated-icons/celebration.json"}'></div>
+                        </div>
+                        <h4 class="mb-1">Ready to create this movie?</h4>
+                        <p>Click submit to save your movie.</p>
+                        <button type="submit" class="btn btn-success px-5 my-3">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer bg-body-tertiary">
+                <div class="px-sm-3 px-md-5">
+                    <ul class="pager wizard list-inline mb-0">
+                        <li class="previous">
+                            <button class="btn btn-link ps-0" type="button">Prev</button>
+                        </li>
+                        <li class="next">
+                            <button class="btn btn-primary px-5 px-sm-6" type="button">Next</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    @* <partial name="_ValidationScriptsPartial" /> *@
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(event.target.files[0]);
+            preview.classList.remove('d-none');
+        }
+    </script>
+
+
+

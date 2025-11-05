@@ -1,0 +1,95 @@
+﻿/* General container */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* Headings */
+h2, h4.fw-bold {
+    font-size: 24px;
+    color: #344767;
+    margin-bottom: 25px;
+}
+
+/* Form labels */
+label, .form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Form inputs */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #5e72e4;
+        box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+    }
+
+/* Submit Button */
+.btn-primary {
+    background-color: #5e72e4;
+    border-color: #5e72e4;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #324cdd;
+    }
+
+/* Table styling */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+/* Action buttons */
+.btn-sm {
+    font-size: 13px;
+    padding: 6px 10px;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    h2, h4.fw-bold {
+        font-size: 20px;
+    }
+
+    .btn-sm {
+        display: block;
+        margin-bottom: 5px;
+    }
+}

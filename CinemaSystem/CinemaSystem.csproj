@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <UserSecretsId>9bf5d259-d2f5-4323-b2bc-61bbc62701f5</UserSecretsId>
+
+	  <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0</ContainerBaseImage>
+    <UserSecretsId>557c5bfe-3d4f-41be-afe1-ba772704e159</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\Admin\**" />
+    <Content Remove="wwwroot\Admin\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\**" />
+    <None Remove="wwwroot\Admin\**" />
+  </ItemGroup>
+
+
+
+
+
+  <ItemGroup>
+    <ContainerPort Include="8081" />
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Stripe.net" Version="49.1.0" />
+
+		<PackageReference Include="Mapster" Version="7.4.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="Areas\Admin\Views\Home\index.cshtml" />
+	  <None Include="Areas\Admin\Views\Home\widgets.cshtml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\actors\" />
+	  <Folder Include="wwwroot\images\movieimages\" />
+	</ItemGroup>
+</Project>

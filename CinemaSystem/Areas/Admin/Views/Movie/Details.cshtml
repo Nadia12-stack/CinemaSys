@@ -1,0 +1,128 @@
+﻿@model MovieVM
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+<script src="https://cdn.jsdelivr.net/npm/rater-js@1.0.0/index.min.js"></script>
+
+<div class="container mt-4">
+    <h2 class="display-6 mb-3">🎬 @Model.Movie!.Name</h2>
+
+    <!-- Main Image -->
+    <div class="mb-4">
+        <img src="~/images/@Model.Movie.MainImg" class="img-fluid rounded" style="max-width: 300px;" />
+    </div>
+
+    <!-- Description -->
+    <p class="fs-10">@Model.Movie.Description</p>
+
+    <!-- Price & Discount -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <strong>Price:</strong> @Model.Movie.Price.ToString("c")
+        </div>
+        <div class="col-md-4">
+            <strong>Discount:</strong> @Model.Movie.Discount.ToString("c")
+        </div>
+        <div class="col-md-4">
+            <strong>Status:</strong>
+            <span class="badge @(Model.Movie.Status ? "bg-success" : "bg-danger")">
+                @(Model.Movie.Status ? "Active" : "Inactive")
+            </span>
+        </div>
+    </div>
+
+    <!-- Category -->
+    <div class="mb-3">
+        <strong>Category:</strong> @Model.Movie.Category.Name
+    </div>
+
+    <!-- Release Date -->
+    <div class="mb-3">
+        <strong>Release Date:</strong> @Model.Movie.ReleaseDate.ToShortDateString()
+    </div>
+
+    <!-- Rate -->
+    <div class="mb-3">
+        <strong>Rate:</strong>
+        <div id="movieRate" data-rater='{"starSize":32,"step":0.5}'></div>
+    </div>
+
+    <!-- Actors -->
+    <div class="mb-3">
+        <strong>Actors:</strong>
+        @foreach (var actor in Model.Movie.MovieActors)
+        {
+            <span class="badge bg-secondary me-1">@actor.Actor.Name</span>
+        }
+    </div>
+
+    <!-- Cinemas -->
+    <div class="mb-3">
+        <strong>Cinemas:</strong>
+        @foreach (var cinema in Model.Movie.MovieCinemas)
+        {
+            <span class="badge bg-info me-1">@cinema.Cinema.Name</span>
+        }
+    </div>
+
+    <!-- Sub Images -->
+    @if (Model.MovieSubImages != null && Model.MovieSubImages.Any())
+    {
+        <div class="card mb-3 mb-lg-0">
+            <div class="card-header bg-body-tertiary">
+                <h5 class="mb-0">Photos</h5>
+            </div>
+            <div class="card-body overflow-hidden">
+                <div class="row g-0">
+                    @foreach (var item in Model.MovieSubImages)
+                    {
+                        <div class="col-4 p-1">
+                            <a class="glightbox" href="~/images/movieimages/@item.Img" data-gallery="gallery1" data-glightbox="data-glightbox">
+                                <img class="img-fluid rounded" src="~/images/movieimages/@item.Img" alt="..." />
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Social Links -->
+@*     @if (Model.socialLinks != null && Model.socialLinks.Any())
+    {
+        <div class="card mt-4 mb-3">
+            <div class="card-header bg-body-tertiary d-flex justify-content-between">
+                <h5 class="mb-0">Social Links</h5>
+            </div>
+            <div class="card-body fs-10 pb-0">
+                <div class="row">
+                    @foreach (var link in Model.socialLinks)
+                    {
+                        <div class="col-sm-6 mb-3">
+                            <div class="d-flex position-relative align-items-center mb-2">
+                                <img class="d-flex align-self-center me-2 rounded-3" src="~/assets/img/logos/@link.Platform" alt="" width="50" />
+                                <div class="flex-1">
+                                    <h6 class="fs-9 mb-0">
+                                        <a class="stretched-link" href="@link.Url" target="_blank">@link.Actor.Name</a>
+                                    </h6>
+                                    <p class="mb-1">@link.Actor.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div> *@
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        raterJs({
+            starSize: 32,
+            step: 0.5,
+            rating: @Model.Movie.Rate,
+            readOnly: true,
+            element: document.querySelector("#movieRate")
+        });
+    });
+</script>

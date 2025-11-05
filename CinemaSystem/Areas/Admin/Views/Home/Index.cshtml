@@ -1,0 +1,358 @@
+﻿
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-body-tertiary py-2 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">🎯 Quick Stats</h6>
+    </div>
+
+    <div class="card-body">
+        <div id="chart-summary" style="height: 250px;"></div>
+       
+    </div>
+</div>
+<hr />
+<div class="card mt-3 p-2 shadow-sm text-center">
+    <h6 class="mb-1">🏆 Top Category</h6>
+    <p class="fw-bold text-primary mb-0">@ViewBag.TopCategory</p>
+</div>
+
+<div class="row text-center mt-3">
+    <div class="col">
+        <div class="card p-2 shadow-sm">
+            <h6 class="mb-1">🎬 Active Movies</h6>
+            <p class="fw-bold text-success mb-0">@ViewBag.ActiveMovies</p>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card p-2 shadow-sm">
+            <h6 class="mb-1">🎬 Inactive Movies</h6>
+            <p class="fw-bold text-danger mb-0">@ViewBag.InactiveMovies</p>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center mt-3">
+    <div class="col">
+        <div class="card p-2 shadow-sm">
+            <h6 class="mb-1">🎬 Active Actors</h6>
+            <p class="fw-bold text-success mb-0">@ViewBag.ActiveActors</p>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card p-2 shadow-sm">
+            <h6 class="mb-1">🎬 Inactive Actors</h6>
+            <p class="fw-bold text-danger mb-0">@ViewBag.InactiveActors</p>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center mt-3 gap-2">
+</div>
+<hr/>
+@using System.Text.Json
+@{
+    var totalActors = ViewBag.TotalActors ?? 0;
+    var totalMovies = ViewBag.TotalMovies ?? 0;
+    var totalCinemas = ViewBag.TotalCinemas ?? 0;
+    var totalCategories = ViewBag.TotalCategories ?? 0;
+}
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-body-tertiary py-2">
+                <h6 class="mb-0">🧑‍🎤 Total Actors</h6>
+            </div>
+            <div class="card-body">
+                <div id="gaugeActors" style="min-height: 200px;" data-echart-responsive="true"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-body-tertiary py-2">
+                <h6 class="mb-0">🎬 Total Movies</h6>
+            </div>
+            <div class="card-body">
+                <div id="gaugeMovies" style="min-height: 200px;" data-echart-responsive="true"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-body-tertiary py-2">
+                <h6 class="mb-0">🏛️ Total Cinemas</h6>
+            </div>
+            <div class="card-body">
+                <div id="gaugeCinemas" style="min-height: 200px;" data-echart-responsive="true"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-body-tertiary py-2">
+                <h6 class="mb-0">📁 Total Categories</h6>
+            </div>
+            <div class="card-body">
+                <div id="gaugeCategories" style="min-height: 200px;" data-echart-responsive="true"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+<script>
+    function renderGauge(id, value, label, color) {
+        var chart = echarts.init(document.getElementById(id));
+        var option = {
+            series: [{
+                type: 'gauge',
+                startAngle: 90,
+                endAngle: -270,
+                radius: '100%',
+                pointer: { show: false },
+                progress: {
+                    show: true,
+                    overlap: false,
+                    roundCap: true,
+                    clip: false,
+                    itemStyle: { color: color }
+                },
+                axisLine: {
+                    lineStyle: {
+                        width: 20,
+                        color: [[1, '#e0e0e0']]
+                    }
+                },
+                splitLine: { show: false },
+                axisTick: { show: false },
+                axisLabel: { show: false },
+                title: {
+                    fontSize: 14,
+                    offsetCenter: [0, '70%']
+                },
+                detail: {
+                    valueAnimation: true,
+                    fontSize: 30,
+                    offsetCenter: [0, '0%'],
+                    formatter: value => value + ''
+                },
+                data: [{ value: value, name: label }]
+            }]
+        };
+        chart.setOption(option);
+    }
+
+    renderGauge('gaugeActors', @Html.Raw(JsonSerializer.Serialize(totalActors)), 'Actors', '#4caf50');
+    renderGauge('gaugeMovies', @Html.Raw(JsonSerializer.Serialize(totalMovies)), 'Movies', '#2196f3');
+    renderGauge('gaugeCinemas', @Html.Raw(JsonSerializer.Serialize(totalCinemas)), 'Cinemas', '#ff9800');
+    renderGauge('gaugeCategories', @Html.Raw(JsonSerializer.Serialize(totalCategories)), 'Categories', '#9c27b0');
+</script>
+
+
+
+
+<script>
+    var chartDom = document.getElementById('multiRingChart');
+    var myChart = echarts.init(chartDom);
+
+    var option = {
+        tooltip: {
+            formatter: '{a} <br/>{b}: {c}'
+        },
+        series: [
+             
+            {
+                name: 'Actors',
+                type: 'gauge',
+                radius: '70%',
+                startAngle: 90,
+                endAngle: -270,
+                pointer: { show: false },
+                progress: { show: true, width: 10 },
+                axisLine: { lineStyle: { width: 10 } },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                axisLabel: { show: false },
+                data: [{ value: @ViewBag.TotalActors, name: 'Actors' }]
+            },
+            {
+                name: 'Movies',
+                type: 'gauge',
+                radius: '55%',
+                startAngle: 90,
+                endAngle: -270,
+                pointer: { show: false },
+                progress: { show: true, width: 10 },
+                axisLine: { lineStyle: { width: 10 } },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                axisLabel: { show: false },
+                data: [{ value: @ViewBag.TotalMovies, name: ' Movies' }]
+            },
+            {
+                name: 'Cinemas',
+                type: 'gauge',
+                radius: '40%',
+                startAngle: 90,
+                endAngle: -270,
+                pointer: { show: false },
+                progress: { show: true, width: 10 },
+                axisLine: { lineStyle: { width: 10 } },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                axisLabel: { show: false },
+                data: [{ value: @ViewBag.TotalCinemas, name: 'Cinemas' }]
+                },
+                {
+        name: 'Categories',
+        type: 'gauge',
+        radius: '25%',
+        startAngle: 90,
+        endAngle: -270,
+        pointer: { show: false },
+        progress: { show: true, width: 10 },
+        axisLine: { lineStyle: { width: 10 } },
+        axisTick: { show: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
+        data: [{ value: @ViewBag.TotalCategories, name: 'Categories' }]
+    }
+
+        ]
+    };
+
+    myChart.setOption(option);
+</script>
+
+
+
+
+
+
+<script>
+    var chartDom = document.getElementById('movieChart');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            top: '5%',
+            left: 'center'
+        },
+        series: [
+            {
+                name: 'Movies',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 14,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: @ViewBag.ActiveMovies, name: 'Active' },
+                    { value: @ViewBag.InactiveMovies, name: 'Inactive' }
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script>
+    var chartDom = document.getElementById('actorChart');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            top: '5%',
+            left: 'center'
+        },
+        series: [
+            {
+                name: 'Actors',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 14,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: @ViewBag.ActiveActors, name: 'Active' },
+                    { value: @ViewBag.InactiveActors, name: 'Inactive' }
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+
+<script>
+    var chartDom = document.getElementById('chart-summary');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            top: '5%',
+            left: 'center'
+        },
+        series: [
+            {
+                name: 'Stats',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 14,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                  data: [
+        { value: @ViewBag.ActiveActors, name: 'Active Actors' },
+        { value: @ViewBag.InactiveActors, name: 'Inactive Actors' },
+        { value: @ViewBag.ActiveMovies, name: 'Active Movies' },
+        { value: @ViewBag.InactiveMovies, name: 'Inactive Movies' },
+        { value: @ViewBag.TotalCinemas, name: 'Cinemas' }
+    ]
+
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>

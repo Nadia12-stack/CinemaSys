@@ -1,0 +1,177 @@
+﻿@model Actor
+@{
+    ViewData["Title"] = "Edit Actor";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+<div class="container mt-4">
+    <div class="card theme-wizard">
+        <div class="card-header bg-body-tertiary pt-3 pb-2">
+            <ul class="nav justify-content-between nav-wizard" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active fw-semi-bold" href="#step1" data-bs-toggle="tab" role="tab">
+                        <span class="nav-item-circle-parent">
+                            <span class="nav-item-circle"><i class="bi bi-person-fill-lock"></i></span>
+                        </span>
+                        <span class="d-none d-md-block mt-1 fs-10">Basic Info</span>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link fw-semi-bold" href="#step2" data-bs-toggle="tab" role="tab">
+                        <span class="nav-item-circle-parent">
+                            <span class="nav-item-circle"><i class="bi bi-person-vcard"></i></span>
+                        </span>
+                        <span class="d-none d-md-block mt-1 fs-10">Details</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="card-body py-4" id="wizard-controller">
+                <div class="tab-content">
+                    <!-- Step 1 -->
+                    <div class="tab-pane active px-sm-3 px-md-5" role="tabpanel" id="step1">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Actor Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BirthDate" class="form-label">Birth Date</label>
+                            <input asp-for="BirthDate" type="date" class="form-control" />
+                            <span asp-validation-for="BirthDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nationality" class="form-label">Nationality</label>
+                            <input asp-for="Nationality" class="form-control" placeholder="e.g. Egyptian" />
+                            <span asp-validation-for="Nationality" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label">Status</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary px-5" type="button" onclick="validateStep1()">Next →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="tab-pane px-sm-3 px-md-5" role="tabpanel" id="step2">
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label><br />
+                            <img id="preview" src="~/images/actors/@Model.Img" alt="Actor Image"
+                                 style="max-width: 200px; border:1px solid #ccc; padding:5px; border-radius:10px;" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload New Image</label>
+                            <input type="file" name="img" class="form-control" accept="image/*" onchange="previewImage(event)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Awards" class="form-label">Awards</label>
+                            <input asp-for="Awards" class="form-control" />
+                            <span asp-validation-for="Awards" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Social Media Links</label>
+                            <div id="socialLinksContainer">
+                                @for (int i = 0; i < Model.SocialLinks.Count; i++)
+                                {
+                                    <div class="d-flex gap-2 mb-2 align-items-center social-link-row">
+                                        <input type="text" name="SocialLinks[@i].Platform" class="form-control" placeholder="Platform (e.g. Facebook)" value="@Model.SocialLinks[i].Platform" />
+                                        <input type="url" name="SocialLinks[@i].Url" class="form-control" placeholder="URL" value="@Model.SocialLinks[i].Url" />
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeSocialLink(this)">🗑️</button>
+                                    </div>
+                                }
+                            </div>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="addSocialLink()">➕ Add Link</button>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-link" type="button" onclick="goToStep('step1')">← Prev</button>
+                            <button class="btn btn-primary px-5" type="submit">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+    <script>
+        function goToStep(stepId) {
+            const trigger = document.querySelector(`a[href="#${stepId}"]`);
+            if (trigger) {
+                new bootstrap.Tab(trigger).show();
+            }
+        }
+
+        function validateStep1() {
+            const name = document.querySelector('[name="Name"]');
+            const birthDate = document.querySelector('[name="BirthDate"]');
+            const nationality = document.querySelector('[name="Nationality"]');
+            const status = document.querySelector('[name="Status"]');
+
+            let isValid = true;
+
+            [name, birthDate, nationality, status].forEach(input => {
+                if (!input.value || input.value.trim() === "") {
+                    input.classList.add("is-invalid");
+                    isValid = false;
+                } else {
+                    input.classList.remove("is-invalid");
+                }
+            });
+
+            if (isValid) {
+                goToStep('step2');
+            }
+        }
+
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById("preview");
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addSocialLink() {
+            const container = document.getElementById("socialLinksContainer");
+            const index = container.children.length;
+            const div = document.createElement("div");
+            div.className = "d-flex gap-2 mb-2 align-items-center social-link-row";
+            div.innerHTML = `
+                <input type="text" name="SocialLinks[${index}].Platform" class="form-control" placeholder="Platform (e.g. Instagram)" />
+                <input type="url" name="SocialLinks[${index}].Url" class="form-control" placeholder="URL" />
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeSocialLink(this)">🗑️</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeSocialLink(button) {
+            button.parentElement.remove();
+        }
+    </script>
+
+
