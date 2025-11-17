@@ -1,6 +1,7 @@
 ﻿using CinemaSystem.Repositories.IRepositories;
 using CinemaSystem.Utitlies;
 using CinemaSystem.Utitlies.DBInitilizer;
+using CinemaSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ namespace CinemaSystem
 {
     public static class AppConfiguration
     {
+        private static object builder;
+
         public static void RegisterConfig(this IServiceCollection services, string connection)
         {
             services.AddDbContext<ApplicationDbContext>(option =>
@@ -36,12 +39,16 @@ namespace CinemaSystem
 
             services.AddTransient<IEmailSender, EmailSender>();
 
-            //services.AddScoped<IRepository<Category>, Repository<Category>>();
-            //services.AddScoped<IRepository<MovieSubImage>, Repository<MovieSubImage>>();
-            //services.AddScoped<IRepository<Actor>, Repository<Actor>>();
-            //services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
-            //services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
-            //services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IRepository<Category>, Repository<Category>>();
+            services.AddScoped<IRepository<MovieSubImage>, Repository<MovieSubImage>>();
+            services.AddScoped<IRepository<Actor>, Repository<Actor>>();
+            services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
+            services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
+
+            services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
 
             services.AddScoped<IDBInitializer, DBInitializer>();
         }

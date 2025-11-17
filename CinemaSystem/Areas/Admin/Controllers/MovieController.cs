@@ -30,7 +30,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
         {
             const int pageSize = 8;
 
-           
+
             var movies = await _movieRepository.GetAsync(
                 includes: [m => m.Category, m => m.MovieCinemas, m => m.MovieActors],
                 tracked: false,
@@ -107,7 +107,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryRepository.GetAsync();
-            var cinemas =await _cinemaRepository.GetAsync();
+            var cinemas = await _cinemaRepository.GetAsync();
             var actors = await _actorRepository.GetAsync();
 
             return View(new MovieVM
@@ -119,7 +119,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(MovieVM movieVM, IFormFile img, List<IFormFile>? subImgs, string[] actors, List<int> cinemaIds,CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(MovieVM movieVM, IFormFile img, List<IFormFile>? subImgs, string[] actors, List<int> cinemaIds, CancellationToken cancellationToken)
         {
             var transaction = _context.Database.BeginTransaction();
 
@@ -138,8 +138,8 @@ namespace CinemaSystem.Areas.Admin.Controllers
                 }
 
                 // Save Movie
-                await _movieRepository.AddAsync(movie,cancellationToken);
-              await  _movieRepository.CommitAsync(cancellationToken);
+                await _movieRepository.AddAsync(movie, cancellationToken);
+                await _movieRepository.CommitAsync(cancellationToken);
 
 
                 // Sub Images
@@ -156,7 +156,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
                         {
                             Img = fileName,
                             MovieId = movie.Id
-                        },cancellationToken);
+                        }, cancellationToken);
                     }
                     await _movieSubImageRepository.CommitAsync(cancellationToken);
                 }
@@ -166,13 +166,13 @@ namespace CinemaSystem.Areas.Admin.Controllers
                 {
                     foreach (var actorId in actors)
                     {
-                      await _movieActorRepository.AddAsync(new MovieActor
+                        await _movieActorRepository.AddAsync(new MovieActor
                         {
                             ActorId = int.Parse(actorId),
                             MovieId = movie.Id
-                        },cancellationToken);
+                        }, cancellationToken);
                     }
-                   await _movieActorRepository.CommitAsync(cancellationToken);
+                    await _movieActorRepository.CommitAsync(cancellationToken);
                 }
 
                 // Save Cinemas
@@ -180,13 +180,13 @@ namespace CinemaSystem.Areas.Admin.Controllers
                 {
                     foreach (var cinemaId in cinemaIds)
                     {
-                      await  _movieCinemaRepository.AddAsync(new MovieCinema
+                        await _movieCinemaRepository.AddAsync(new MovieCinema
                         {
                             CinemaId = cinemaId,
                             MovieId = movie.Id
-                        },cancellationToken);
+                        }, cancellationToken);
                     }
-                  await  _movieCinemaRepository.CommitAsync(cancellationToken);
+                    await _movieCinemaRepository.CommitAsync(cancellationToken);
                 }
 
                 TempData["SuccessMessage"] = "Add Movie Successfully";
@@ -204,15 +204,15 @@ namespace CinemaSystem.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-          
-            var movie =await _movieRepository.GetOneAsync( m => m.Id == id,
-                includes:[m => m.MovieActors, m => m.MovieCinemas, m => m.Category]
-                ,tracked:false);
+
+            var movie = await _movieRepository.GetOneAsync(m => m.Id == id,
+                includes: [m => m.MovieActors, m => m.MovieCinemas, m => m.Category]
+                , tracked: false);
 
             if (movie == null)
                 return NotFound();
 
-            var subImages =await _movieSubImageRepository.GetAsync();
+            var subImages = await _movieSubImageRepository.GetAsync();
             subImages.Where(s => s.MovieId == id).ToList();
 
             var categories = await _categoryRepository.GetAsync();
@@ -240,9 +240,9 @@ namespace CinemaSystem.Areas.Admin.Controllers
             try
             {
                 var movieInDb = await _movieRepository.GetOneAsync(e => e.Id == movie.Id,
-               includes: [m => m.MovieActors, m => m.MovieCinemas],tracked:false
+               includes: [m => m.MovieActors, m => m.MovieCinemas], tracked: false
                );
-               
+
 
                 if (movieInDb is null)
                     return RedirectToAction("NotFoundPage", "Home");
@@ -267,7 +267,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
                 }
 
                 _movieRepository.Update(movie);
-               await _movieRepository.CommitAsync();
+                await _movieRepository.CommitAsync();
 
                 // Sub Images
                 if (subImgs is not null && subImgs.Count > 0)
@@ -279,13 +279,13 @@ namespace CinemaSystem.Areas.Admin.Controllers
                         using var stream = System.IO.File.Create(filePath);
                         item.CopyTo(stream);
 
-                     await   _movieSubImageRepository.AddAsync(new MovieSubImage
+                        await _movieSubImageRepository.AddAsync(new MovieSubImage
                         {
                             Img = fileName,
                             MovieId = movie.Id
                         });
                     }
-                   await _movieSubImageRepository.CommitAsync();
+                    await _movieSubImageRepository.CommitAsync();
                 }
 
                 // Update Actors
@@ -303,7 +303,7 @@ namespace CinemaSystem.Areas.Admin.Controllers
                             MovieId = movie.Id
                         });
                     }
-                   await _movieActorRepository.CommitAsync();
+                    await _movieActorRepository.CommitAsync();
                 }
 
                 // Update Cinemas
@@ -315,13 +315,13 @@ namespace CinemaSystem.Areas.Admin.Controllers
                 {
                     foreach (var cinemaId in cinemaIds)
                     {
-                       await _movieCinemaRepository.AddAsync(new MovieCinema
+                        await _movieCinemaRepository.AddAsync(new MovieCinema
                         {
                             CinemaId = cinemaId,
                             MovieId = movie.Id
                         });
                     }
-                 await  _movieCinemaRepository.CommitAsync();
+                    await _movieCinemaRepository.CommitAsync();
                 }
 
                 TempData["SuccessMessage"] = "Update Movie Successfully";

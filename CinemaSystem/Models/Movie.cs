@@ -16,6 +16,7 @@ namespace CinemaSystem.Models
         public decimal Discount { get; set; }//On Ticket
         [Range(0, 5, ErrorMessage = "Rate must be between 0 and 5.")]
         public double?Rate { get; set; }
+        public long Traffic { get; set; }
 
         public string MainImg { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }

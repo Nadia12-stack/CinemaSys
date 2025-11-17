@@ -9,27 +9,13 @@ namespace CinemaSystem.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-   
     public class CategoryController : Controller
     {
         //ApplicationDbContext _context = new();
-<<<<<<< HEAD
-    Repository<Category> _categoryRepository = new();
+        Repository<Category> _categoryRepository = new();
 
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-=======
-        //Repository<Category> _categoryRepository = new();
-        private readonly IRepository<Category> _categoryRepository;// = new Repository<Category>();
-
-        public CategoryController(IRepository<Category> categoryRepository)
-        {
-            _categoryRepository = categoryRepository;
-        }
-
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
-        {
->>>>>>> e4955d5d839d0b832f284b280ce538c034a76a5f
             var categories = await _categoryRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
             // Add Filter
@@ -59,10 +45,6 @@ namespace CinemaSystem.Areas.Admin.Controllers
         }
 
         [HttpGet]
-<<<<<<< HEAD
-=======
-       
->>>>>>> e4955d5d839d0b832f284b280ce538c034a76a5f
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
@@ -74,10 +56,6 @@ namespace CinemaSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-<<<<<<< HEAD
-=======
-     
->>>>>>> e4955d5d839d0b832f284b280ce538c034a76a5f
         public async Task<IActionResult> Edit(Category category, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -93,10 +71,6 @@ namespace CinemaSystem.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-<<<<<<< HEAD
-=======
-       
->>>>>>> e4955d5d839d0b832f284b280ce538c034a76a5f
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
